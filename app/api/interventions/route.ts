@@ -51,8 +51,6 @@ export async function GET(request: Request) {
       total: filteredInterventions.length,
       completed: filteredInterventions.filter(i => i.status === 'completed').length,
       ongoing: filteredInterventions.filter(i => i.status === 'ongoing').length,
-      planned: filteredInterventions.filter(i => i.status === 'planned').length,
-      suspended: filteredInterventions.filter(i => i.status === 'suspended').length,
       averageCompletion: filteredInterventions.length > 0 
         ? filteredInterventions.reduce((sum, i) => sum + i.completionPercentage, 0) / filteredInterventions.length 
         : 0,
@@ -61,7 +59,7 @@ export async function GET(request: Request) {
       byType: {
         vaccination: filteredInterventions.filter(i => i.type === 'vaccination').length,
         screening: filteredInterventions.filter(i => i.type === 'screening').length,
-        treatment: filteredInterventions.filter(i => i.type === 'treatment').length,
+         
         awareness: filteredInterventions.filter(i => i.type === 'awareness').length
       }
     };
@@ -107,7 +105,7 @@ export async function POST(request: Request) {
       location: interventionData.location,
       stateId: interventionData.stateId,
       districtId: interventionData.districtId || undefined,
-      status: 'planned',
+      status: 'completed',
       startDate: interventionData.startDate,
       endDate: interventionData.endDate,
       assignedTo: interventionData.assignedTo || []

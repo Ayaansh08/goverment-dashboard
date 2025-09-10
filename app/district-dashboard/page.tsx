@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Icon } from '@iconify/react';
 import ChartContainer from '@/app/components/ChartContainer';
 import AlertPanel from '@/app/components/AlertPanel';
@@ -9,8 +9,32 @@ import PointDensityMap from '@/app/components/PointDensityMap';
 
 import { mockStates, mockAlerts, mockResources, mockInterventions } from '@/app/lib/mockData';
 
+// ✅ define proper type for dashboard data instead of `any`
+interface DashboardData {
+  districtInfo?: {
+    id: string;
+    name: string;
+    population: number;
+    riskLevel?: string;
+  };
+  activeAlerts: any[]; // you can replace `any[]` with your Alert type
+  resources: any[];
+  interventions: any[];
+  interventionCompletionRate: number;
+  totalResources: number;
+  outbreakTrends: { date: string; cases: number }[];
+  aiConfidenceMetrics: {
+    outbreakPrediction: { nextWeek: { confidence: number; riskLevel: string } };
+    resourceDemand: {
+      beds: { predicted: number; confidence: number };
+      staff: { predicted: number; confidence: number };
+      medicines: { predicted: number; confidence: number };
+    };
+  };
+}
+
 export default function DistrictDashboard() {
-  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [selectedState, setSelectedState] = useState('as');
   const [selectedDistrict, setSelectedDistrict] = useState('as-guwahati');
   const [loading, setLoading] = useState(true);
@@ -23,11 +47,12 @@ export default function DistrictDashboard() {
       stateId: state.id,
       districtId: district.id,
       stateName: state.name,
-      districtName: district.name
+      districtName: district.name,
     }))
   );
 
-  const fetchDashboardData = () => {
+  // ✅ wrap in useCallback to fix "missing dependency" warning
+  const fetchDashboardData = useCallback(() => {
     setLoading(true);
     const state = mockStates.find((s) => s.id === selectedState);
     const district = state?.districts.find((d) => d.id === selectedDistrict);
@@ -60,24 +85,26 @@ export default function DistrictDashboard() {
             { date: '2024-09-01', cases: Math.floor(Math.random() * 20) },
             { date: '2024-09-02', cases: Math.floor(Math.random() * 20) },
             { date: '2024-09-03', cases: Math.floor(Math.random() * 20) },
-            { date: '2024-09-04', cases: Math.floor(Math.random() * 20) }
+            { date: '2024-09-04', cases: Math.floor(Math.random() * 20) },
           ]
         : [],
       aiConfidenceMetrics: {
-        outbreakPrediction: { nextWeek: { confidence: 0.82, riskLevel: district?.riskLevel || 'medium' } },
+        outbreakPrediction: {
+          nextWeek: { confidence: 0.82, riskLevel: district?.riskLevel || 'medium' },
+        },
         resourceDemand: {
           beds: { predicted: 100, confidence: 0.78 },
           staff: { predicted: 30, confidence: 0.71 },
-          medicines: { predicted: 500, confidence: 0.85 }
-        }
-      }
+          medicines: { predicted: 500, confidence: 0.85 },
+        },
+      },
     });
     setLoading(false);
-  };
+  }, [selectedState, selectedDistrict]);
 
   useEffect(() => {
     fetchDashboardData();
-  }, [selectedState, selectedDistrict]);
+  }, [fetchDashboardData]);
 
   const handleAllocate = (resourceId: string, amount: number) => {
     const resource = mockResources.find((r) => r.id === resourceId);
@@ -93,21 +120,13 @@ export default function DistrictDashboard() {
     fetchDashboardData();
   };
 
-  const getRiskLevelColor = (riskLevel: string) => {
-    switch (riskLevel) {
-      case 'critical': return 'text-red-600 bg-red-100';
-      case 'high': return 'text-orange-600 bg-orange-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  };
+  // ❌ removed getRiskLevelColor because it was unused
 
-  const currentLocation = locations.find(
-    (loc) => loc.stateId === selectedState && loc.districtId === selectedDistrict
-  ) || locations[0];
+  const currentLocation =
+    locations.find((loc) => loc.stateId === selectedState && loc.districtId === selectedDistrict) ||
+    locations[0];
 
-  if (loading) {
+  if (loading || !dashboardData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100">
         <div className="text-center">
@@ -120,15 +139,21 @@ export default function DistrictDashboard() {
 
   const outbreakTrendData = dashboardData.outbreakTrends || [];
   const aiConfidenceData = [
-    { name: 'Outbreak Prediction', confidence: dashboardData.aiConfidenceMetrics.outbreakPrediction.nextWeek.confidence * 100 },
+    {
+      name: 'Outbreak Prediction',
+      confidence: dashboardData.aiConfidenceMetrics.outbreakPrediction.nextWeek.confidence * 100,
+    },
     { name: 'Beds', confidence: dashboardData.aiConfidenceMetrics.resourceDemand.beds.confidence * 100 },
     { name: 'Staff', confidence: dashboardData.aiConfidenceMetrics.resourceDemand.staff.confidence * 100 },
-    { name: 'Medicines', confidence: dashboardData.aiConfidenceMetrics.resourceDemand.medicines.confidence * 100 }
+    {
+      name: 'Medicines',
+      confidence: dashboardData.aiConfidenceMetrics.resourceDemand.medicines.confidence * 100,
+    },
   ];
   const resourceMixPie = [
     { name: 'Beds', value: dashboardData.aiConfidenceMetrics.resourceDemand.beds.predicted },
     { name: 'Staff', value: dashboardData.aiConfidenceMetrics.resourceDemand.staff.predicted },
-    { name: 'Medicines', value: dashboardData.aiConfidenceMetrics.resourceDemand.medicines.predicted }
+    { name: 'Medicines', value: dashboardData.aiConfidenceMetrics.resourceDemand.medicines.predicted },
   ];
 
   return (
@@ -145,7 +170,7 @@ export default function DistrictDashboard() {
           </div>
           <div className="flex items-center space-x-4">
             <select
-              value={`${selectedState}:${selectedDistrict}`}
+              value={`${selectedState}:${selectedDistrict}`} // ✅ fixed string interpolation
               onChange={(e) => {
                 const [stateId, districtId] = e.target.value.split(':');
                 setSelectedState(stateId);
@@ -154,7 +179,10 @@ export default function DistrictDashboard() {
               className="bg-white border border-orange-300 text-gray-900 text-sm rounded-lg px-3 py-2"
             >
               {locations.map((location) => (
-                <option key={`${location.stateId}:${location.districtId}`} value={`${location.stateId}:${location.districtId}`}>
+                <option
+                  key={`${location.stateId}:${location.districtId}`} // ✅ fixed key
+                  value={`${location.stateId}:${location.districtId}`} // ✅ fixed value
+                >
                   {location.districtName}, {location.stateName}
                 </option>
               ))}
@@ -169,8 +197,16 @@ export default function DistrictDashboard() {
         {/* Dashboard Tabs */}
         <nav className="bg-white/80 backdrop-blur-sm border-t border-orange-200">
           <ul className="flex space-x-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {['overview', 'gismap', 'resources', 'alerts'].map((tab) => (
-              <li key={tab} className={`cursor-pointer py-3 border-b-2 ${activeTab === tab ? 'border-orange-600 font-medium text-orange-600' : 'border-transparent text-gray-600'}`} onClick={() => setActiveTab(tab as any)}>
+            {(['overview', 'gismap', 'resources', 'alerts'] as const).map((tab) => (
+              <li
+                key={tab}
+                className={`cursor-pointer py-3 border-b-2 ${
+                  activeTab === tab
+                    ? 'border-orange-600 font-medium text-orange-600'
+                    : 'border-transparent text-gray-600'
+                }`}
+                onClick={() => setActiveTab(tab)}
+              >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </li>
             ))}
@@ -182,9 +218,11 @@ export default function DistrictDashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'overview' && (
           <section>
-            <h2 className="text-2xl font-light text-gray-900 mb-4">{currentLocation.districtName}, {currentLocation.stateName}</h2>
+            <h2 className="text-2xl font-light text-gray-900 mb-4">
+              {currentLocation.districtName}, {currentLocation.stateName}
+            </h2>
             <div className="flex items-center space-x-6 text-sm text-gray-600 mb-8">
-              <span>Population: {dashboardData.districtInfo.population}</span>
+              <span>Population: {dashboardData.districtInfo?.population}</span>
               <span>Active Interventions: {dashboardData.interventions.length}</span>
               <span>Completion Rate: {dashboardData.interventionCompletionRate.toFixed(1)}%</span>
             </div>
@@ -201,7 +239,9 @@ export default function DistrictDashboard() {
               </div>
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-sm">
                 <p className="text-sm font-medium text-gray-600">Completion Rate</p>
-                <p className="text-2xl font-light text-gray-900">{dashboardData.interventionCompletionRate.toFixed(0)}%</p>
+                <p className="text-2xl font-light text-gray-900">
+                  {dashboardData.interventionCompletionRate.toFixed(0)}%
+                </p>
               </div>
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-sm">
                 <p className="text-sm font-medium text-gray-600">Total Resources</p>
@@ -211,9 +251,31 @@ export default function DistrictDashboard() {
 
             {/* Intervention Charts */}
             <div className="space-y-8">
-              <ChartContainer title="Local Outbreak Trends" type="line" data={outbreakTrendData} xKey="date" yKey="cases" color="#ea580c" height={300} />
-              <ChartContainer title="AI Prediction Confidence" type="bar" data={aiConfidenceData} xKey="name" yKey="confidence" color="#f97316" height={300} />
-              <ChartContainer title="Predicted Resource Mix" type="pie" data={resourceMixPie} height={300} colors={["#fb923c", "#10b981", "#3b82f6", "#eab308"]} />
+              <ChartContainer
+                title="Local Outbreak Trends"
+                type="line"
+                data={outbreakTrendData}
+                xKey="date"
+                yKey="cases"
+                color="#ea580c"
+                height={300}
+              />
+              <ChartContainer
+                title="AI Prediction Confidence"
+                type="bar"
+                data={aiConfidenceData}
+                xKey="name"
+                yKey="confidence"
+                color="#f97316"
+                height={300}
+              />
+              <ChartContainer
+                title="Predicted Resource Mix"
+                type="pie"
+                data={resourceMixPie}
+                height={300}
+                colors={['#fb923c', '#10b981', '#3b82f6', '#eab308']}
+              />
             </div>
           </section>
         )}
@@ -227,8 +289,15 @@ export default function DistrictDashboard() {
         {activeTab === 'resources' && (
           <section>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {dashboardData.resources.map((resource: any) => (
-                <ResourceCard key={resource.id} resource={resource} compact={true} showActions={true} onAllocate={handleAllocate} onRelease={handleRelease} />
+              {dashboardData.resources.map((resource) => (
+                <ResourceCard
+                  key={resource.id}
+                  resource={resource}
+                  compact={true}
+                  showActions={true}
+                  onAllocate={handleAllocate}
+                  onRelease={handleRelease}
+                />
               ))}
             </div>
           </section>

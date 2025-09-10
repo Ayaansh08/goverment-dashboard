@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
+type PointDensityMapProps = {
+  disease?: "waterborne" | "malaria" | "dengue" | "cholera";
+  status?: string;
+  region?: string;
+  refreshMs?: number;
+};
+
 type HeatmapPoint = {
   lat: number;
   lng: number;
@@ -56,12 +63,17 @@ const gradientMap: Record<string, any> = {
   cholera: { 0.1: "#c0ffc0", 0.5: "#ffb3b3", 1.0: "#990000" },
 };
 
-export default function PointDensityMap() {
+export default function PointDensityMap({
+  disease: initialDisease = "waterborne",
+  status,
+  region,
+  refreshMs = 10000,
+}: PointDensityMapProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
   const heatLayerRef = useRef<any>(null);
 
-  const [disease, setDisease] = useState<string>(diseaseOptions[0]);
+  const [disease, setDisease] = useState<string>(initialDisease);
   const [loading, setLoading] = useState<boolean>(true);
 
   const renderHeatmap = async () => {
@@ -87,7 +99,6 @@ export default function PointDensityMap() {
     const initMap = async () => {
       if (!mapRef.current) return;
 
-      // If map already exists, just render heatmap and return
       if (mapInstanceRef.current) {
         renderHeatmap();
         return;
@@ -100,12 +111,15 @@ export default function PointDensityMap() {
         zoom: 6,
       });
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-        subdomains: "abcd",
-        maxZoom: 19,
-      }).addTo(map);
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+          subdomains: "abcd",
+          maxZoom: 19,
+        }
+      ).addTo(map);
 
       mapInstanceRef.current = map;
 
@@ -133,7 +147,9 @@ export default function PointDensityMap() {
           <button
             key={d}
             className={`px-3 py-1 rounded ${
-              disease === d ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+              disease === d
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700"
             }`}
             onClick={() => setDisease(d)}
           >

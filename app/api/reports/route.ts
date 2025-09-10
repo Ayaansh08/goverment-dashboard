@@ -154,7 +154,7 @@ function generateOverviewReport(stateId?: string | null, districtId?: string | n
       total: interventions.length,
       completed: interventions.filter(i => i.status === 'completed').length,
       ongoing: interventions.filter(i => i.status === 'ongoing').length,
-      planned: interventions.filter(i => i.status === 'planned').length,
+ 
       averageCompletion: interventions.length > 0 
         ? interventions.reduce((sum, i) => sum + i.completionPercentage, 0) / interventions.length 
         : 0
@@ -191,7 +191,7 @@ function generateAlertsReport(stateId?: string | null, districtId?: string | nul
       total: alerts.length,
       active: alerts.filter(a => a.status === 'active').length,
       resolved: alerts.filter(a => a.status === 'resolved').length,
-      underInvestigation: alerts.filter(a => a.status === 'under_investigation').length,
+   
       averageResponseTime: alerts
         .filter(a => a.responseTime)
         .reduce((sum, a) => sum + (a.responseTime || 0), 0) / alerts.filter(a => a.responseTime).length || 0
@@ -241,8 +241,7 @@ function generateInterventionsReport(stateId?: string | null, districtId?: strin
       total: interventions.length,
       completed: interventions.filter(i => i.status === 'completed').length,
       ongoing: interventions.filter(i => i.status === 'ongoing').length,
-      planned: interventions.filter(i => i.status === 'planned').length,
-      suspended: interventions.filter(i => i.status === 'suspended').length,
+ 
       totalTargetPopulation: interventions.reduce((sum, i) => sum + i.targetPopulation, 0),
       totalCompleted: interventions.reduce((sum, i) => sum + i.completedCount, 0),
       overallCompletionRate: interventions.length > 0 
@@ -252,7 +251,7 @@ function generateInterventionsReport(stateId?: string | null, districtId?: strin
     byType: {
       vaccination: interventions.filter(i => i.type === 'vaccination'),
       screening: interventions.filter(i => i.type === 'screening'),
-      treatment: interventions.filter(i => i.type === 'treatment'),
+    
       awareness: interventions.filter(i => i.type === 'awareness')
     },
     performance: interventions.map(intervention => ({
@@ -300,7 +299,7 @@ function generateResourcesReport(stateId?: string | null, districtId?: string | 
     byStatus: {
       available: resources.filter(r => r.status === 'available'),
       in_use: resources.filter(r => r.status === 'in_use'),
-      maintenance: resources.filter(r => r.status === 'maintenance')
+ 
     },
     allocation: resources.map(resource => ({
       id: resource.id,

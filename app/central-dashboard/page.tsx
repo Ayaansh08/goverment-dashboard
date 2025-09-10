@@ -9,18 +9,68 @@ import PointDensityMap from '@/app/components/PointDensityMap';
 import ResourceCard from '@/app/components/ResourceCard';
 import AddResourceForm from '@/app/components/AddResourceForm';
 
+// ----------------------
+// TYPES
+// ----------------------
+// dashboard/types.ts
+export interface Resource {
+  id: string;
+  name: string;
+  type: 'medical_staff' | 'equipment' | 'medicine' | 'facility';
+  quantity: number;
+  allocated: number;
+  available: number;
+  location: string;
+  status: 'available' | 'in_use' | 'maintenance';
+  lastUpdated: string;
+}
+
+export interface StateData {
+  id: string;
+  name: string;
+  population: number;
+  activeAlerts: number;
+  riskLevel: 'critical' | 'high' | 'medium' | 'low';
+}
+
+export interface Alert {
+  id: string;
+  title: string;
+  description: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  location: string;
+  status: 'active' | 'resolved' | 'under_investigation';
+  createdAt: string;
+  updatedAt: string;
+  responseTime?: number;
+}
+
+export interface DashboardData {
+  stateData: StateData[];
+  topRiskStates?: StateData[];
+  recentAlerts?: Alert[];
+  resources?: Resource[];
+}
+
+
+// ----------------------
+// COMPONENT
+// ----------------------
 export default function CentralDashboard() {
-  const user = { displayName: "Central Authority" };
+  const user = { displayName: 'Central Authority' };
   const router = useRouter();
 
-  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'alerts' | 'map'>('overview');
 
   const [selectedStateId, setSelectedStateId] = useState<string>('');
-  const [stateResources, setStateResources] = useState<any[]>([]);
+  const [stateResources, setStateResources] = useState<Resource[]>([]);
   const [stateResourcesLoading, setStateResourcesLoading] = useState(false);
 
+  // ----------------------
+  // FETCH DASHBOARD
+  // ----------------------
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -39,14 +89,11 @@ export default function CentralDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/dashboard/central');
-      if (response.ok) {
-        setDashboardData(await response.json());
-      } else {
-        console.error('Failed to fetch central dashboard:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      const res = await fetch('/api/dashboard/central');
+      if (res.ok) setDashboardData(await res.json());
+      else console.error('Failed to fetch dashboard data:', res.statusText);
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err);
     } finally {
       setLoading(false);
     }
@@ -57,8 +104,8 @@ export default function CentralDashboard() {
       setStateResourcesLoading(true);
       const res = await fetch(`/api/resources?stateId=${encodeURIComponent(stateId)}`);
       if (!res.ok) throw new Error(await res.text());
-      const data = await res.json();
-      setStateResources(data.resources ?? data ?? []);
+      const data: { resources?: Resource[] } = await res.json();
+      setStateResources(data.resources ?? []);
     } catch (err) {
       console.error('Error fetching state resources:', err);
       setStateResources([]);
@@ -69,31 +116,34 @@ export default function CentralDashboard() {
 
   const updateResourceAllocation = async (resourceId: string, delta: number) => {
     const res =
-      stateResources.find((r: any) => r.id === resourceId) ??
-      (dashboardData?.resources || []).find((r: any) => r.id === resourceId);
+      stateResources.find((r) => r.id === resourceId) ??
+      dashboardData?.resources?.find((r) => r.id === resourceId);
 
     if (!res) return;
 
     const newAllocated = Math.max(
       0,
-      Math.min((Number(res.allocated) || 0) + delta, Number(res.quantity) || 0)
+      Math.min((res.allocated || 0) + delta, res.quantity)
     );
 
     try {
       const put = await fetch('/api/resources', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: resourceId, allocated: newAllocated })
+        body: JSON.stringify({ id: resourceId, allocated: newAllocated }),
       });
       if (!put.ok) console.error('Resource update failed:', await put.text());
-    } catch (e) {
-      console.error('Allocation update failed:', e);
+    } catch (err) {
+      console.error('Allocation update failed:', err);
     } finally {
       fetchDashboardData();
       if (selectedStateId) fetchStateResources(selectedStateId);
     }
   };
 
+  // ----------------------
+  // LOADING STATE
+  // ----------------------
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
@@ -105,8 +155,11 @@ export default function CentralDashboard() {
     );
   }
 
+  // ----------------------
+  // DATA TRANSFORMATIONS
+  // ----------------------
   const stateRiskData =
-    dashboardData?.topRiskStates?.map((state: any) => ({
+    dashboardData?.topRiskStates?.map((state) => ({
       name: state.name,
       riskScore:
         state.riskLevel === 'critical'
@@ -117,28 +170,20 @@ export default function CentralDashboard() {
           ? 50
           : 30,
       alerts: state.activeAlerts,
-      population: state.population / 1_000_000
+      population: state.population / 1_000_000,
     })) || [];
-
-  const alertTrendData = [
-    { date: 'Sep 1', alerts: 15, resolved: 12 },
-    { date: 'Sep 2', alerts: 23, resolved: 18 },
-    { date: 'Sep 3', alerts: 18, resolved: 15 },
-    { date: 'Sep 4', alerts: 31, resolved: 22 },
-    { date: 'Sep 5', alerts: 27, resolved: 25 },
-    { date: 'Sep 6', alerts: 35, resolved: 28 },
-    { date: 'Sep 7', alerts: 29, resolved: 26 },
-    { date: 'Sep 8', alerts: 38, resolved: 30 }
-  ];
 
   const resourceUtilizationData = [
     { name: 'ICU Beds', value: 85 },
     { name: 'Ventilators', value: 72 },
     { name: 'Medical Staff', value: 68 },
     { name: 'Medicines', value: 91 },
-    { name: 'Ambulances', value: 79 }
+    { name: 'Ambulances', value: 79 },
   ];
 
+  // ----------------------
+  // RENDER
+  // ----------------------
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Header */}
@@ -223,11 +268,7 @@ export default function CentralDashboard() {
             {/* Resource Allocation */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
               <div className="lg:col-span-2">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-medium text-gray-900">Resources (State)</h3>
-                  <span className="text-xs text-gray-600">Select state to view</span>
-                </div>
-
+                {/* State Dropdown */}
                 <div className="bg-white shadow rounded-xl p-4 mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Select State</label>
                   <select
@@ -235,8 +276,7 @@ export default function CentralDashboard() {
                     onChange={(e) => setSelectedStateId(e.target.value)}
                     className="w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="">-- Select a state --</option>
-                    {dashboardData?.stateData?.map((s: any) => (
+                    {dashboardData?.stateData?.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.name}
                       </option>
@@ -244,16 +284,17 @@ export default function CentralDashboard() {
                   </select>
                 </div>
 
+                {/* Resource Cards */}
                 <div className="bg-white shadow rounded-xl p-6">
                   {!selectedStateId ? (
-                    <p className="text-sm text-gray-600">Pick a state from the dropdown to see its resources.</p>
+                    <p className="text-sm text-gray-600">Pick a state to see resources.</p>
                   ) : stateResourcesLoading ? (
                     <p className="text-sm text-gray-600">Loading resources...</p>
                   ) : stateResources.length === 0 ? (
                     <p className="text-sm text-gray-600">No resources found for this state.</p>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {stateResources.map((resource: any) => (
+                      {stateResources.map((resource) => (
                         <ResourceCard
                           key={resource.id}
                           resource={resource}
@@ -268,23 +309,27 @@ export default function CentralDashboard() {
                 </div>
               </div>
 
+              {/* Add Resource Form */}
               <div>
-                <AddResourceForm
-                  stateId={selectedStateId}
-                  onCreated={async () => {
-                    await fetchDashboardData();
-                    if (selectedStateId) await fetchStateResources(selectedStateId);
-                  }}
-                />
+                {selectedStateId && (
+                  <AddResourceForm
+                    stateId={selectedStateId}
+                    onCreated={async () => {
+                      await fetchDashboardData();
+                      if (selectedStateId) await fetchStateResources(selectedStateId);
+                    }}
+                  />
+                )}
               </div>
             </div>
           </>
         )}
 
+        {/* Alerts Tab */}
         {activeTab === 'alerts' && (
           <div>
             <h2 className="text-xl font-semibold mb-4">Recent Alerts</h2>
-            {dashboardData?.recentAlerts ? (
+            {dashboardData?.recentAlerts?.length ? (
               <AlertPanel alerts={dashboardData.recentAlerts} maxAlerts={20} showActions={false} />
             ) : (
               <p className="text-gray-600">No alerts currently.</p>
@@ -292,6 +337,7 @@ export default function CentralDashboard() {
           </div>
         )}
 
+        {/* Map Tab */}
         {activeTab === 'map' && (
           <div>
             <h2 className="text-xl font-semibold mb-4">NE India Active Waterborne Cases</h2>

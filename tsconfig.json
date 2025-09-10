@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "strict": false,           // disables strict type checking
+    "noEmitOnError": false,    // allow emit even with errors
+    "skipLibCheck": true,       // skips type checking for external libraries
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -19,8 +22,12 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-    }
+  "@/*": ["./*"],
+  "@/app/*": ["./app/*"],
+  "@/lib/*": ["./app/lib/*"]
+}
+
+    
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

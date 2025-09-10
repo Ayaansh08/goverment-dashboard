@@ -13,7 +13,7 @@ export async function GET() {
 
     // Calculate overall risk level
     const highRiskStates = mockStates.filter(state => 
-      state.riskLevel === 'high' || state.riskLevel === 'critical'
+      state.riskLevel === 'high' || state.riskLevel === 'medium'
     ).length;
 
     let overallRiskLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';

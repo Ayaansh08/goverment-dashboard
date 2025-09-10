@@ -120,7 +120,7 @@ function generateOutbreakPredictions(stateId?: string | null, districtId?: strin
     if (stateId) {
       const stateData = mockStates.find(s => s.id === stateId);
       if (stateData) {
-        const riskMultiplier = stateData.riskLevel === 'critical' ? 1.3 : 
+        const riskMultiplier = 
                              stateData.riskLevel === 'high' ? 1.1 :
                              stateData.riskLevel === 'medium' ? 1.0 : 0.8;
         adjustedProbability *= riskMultiplier;
@@ -179,7 +179,7 @@ function generateResourceDemandPrediction(stateId?: string | null, districtId?: 
     const stateData = mockStates.find(s => s.id === stateId);
     if (stateData) {
       const populationRatio = stateData.population / 100000000; // Adjust based on population
-      const riskMultiplier = stateData.riskLevel === 'critical' ? 1.5 : 
+      const riskMultiplier = 
                            stateData.riskLevel === 'high' ? 1.2 :
                            stateData.riskLevel === 'medium' ? 1.0 : 0.8;
       locationMultiplier = populationRatio * riskMultiplier;

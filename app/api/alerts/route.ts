@@ -48,7 +48,6 @@ export async function GET(request: Request) {
       total: filteredAlerts.length,
       active: filteredAlerts.filter(a => a.status === 'active').length,
       resolved: filteredAlerts.filter(a => a.status === 'resolved').length,
-      underInvestigation: filteredAlerts.filter(a => a.status === 'under_investigation').length,
       bySeverity: {
         critical: filteredAlerts.filter(a => a.severity === 'critical').length,
         high: filteredAlerts.filter(a => a.severity === 'high').length,
