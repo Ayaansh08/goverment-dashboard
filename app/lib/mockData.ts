@@ -317,6 +317,19 @@ export const mockResources: Resource[] = [
     lastUpdated: '2024-09-08T18:00:00Z'
   },
   {
+    id: 'res-as-lab-1',
+    name: 'Diagnostic Labs',
+    type: 'facility',
+    quantity: 25,
+    allocated: 18,
+    available: 7,
+    location: 'Dibrugarh, Assam',
+    stateId: 'as',
+    districtId: 'as-dibrugarh',
+    status: 'in_use',
+    lastUpdated: '2024-09-09T09:00:00Z'
+  },
+  {
     id: 'res-ml-doc-1',
     name: 'Doctors on Call',
     type: 'medical_staff',
@@ -328,8 +341,152 @@ export const mockResources: Resource[] = [
     districtId: 'ml-shillong',
     status: 'in_use',
     lastUpdated: '2024-09-08T20:00:00Z'
+  },
+  {
+    id: 'res-ml-nurse-1',
+    name: 'Nursing Staff',
+    type: 'medical_staff',
+    quantity: 120,
+    allocated: 90,
+    available: 30,
+    location: 'Shillong, Meghalaya',
+    stateId: 'ml',
+    districtId: 'ml-shillong',
+    status: 'in_use',
+    lastUpdated: '2024-09-09T15:15:00Z'
+  },
+  {
+    id: 'res-tr-vac-1',
+    name: 'Cholera Vaccines',
+    type: 'medicine',
+    quantity: 20000,
+    allocated: 15000,
+    available: 5000,
+    location: 'Agartala, Tripura',
+    stateId: 'tr',
+    districtId: 'tr-agartala',
+    status: 'available',
+    lastUpdated: '2024-09-09T10:30:00Z'
+  },
+  {
+    id: 'res-tr-kit-1',
+    name: 'Malaria Test Kits',
+    type: 'equipment',
+    quantity: 5000,
+    allocated: 3200,
+    available: 1800,
+    location: 'Agartala, Tripura',
+    stateId: 'tr',
+    districtId: 'tr-agartala',
+    status: 'available',
+    lastUpdated: '2024-09-10T11:20:00Z'
+  },
+  {
+    id: 'res-mn-ox-1',
+    name: 'Oxygen Cylinders',
+    type: 'equipment',
+    quantity: 800,
+    allocated: 600,
+    available: 200,
+    location: 'Imphal, Manipur',
+    stateId: 'mn',
+    districtId: 'mn-imphal',
+    status: 'in_use',
+    lastUpdated: '2024-09-09T09:45:00Z'
+  },
+  {
+    id: 'res-mn-vent-1',
+    name: 'Ventilators',
+    type: 'equipment',
+    quantity: 60,
+    allocated: 45,
+    available: 15,
+    location: 'Imphal, Manipur',
+    stateId: 'mn',
+    districtId: 'mn-imphal',
+    status: 'available',
+    lastUpdated: '2024-09-10T13:00:00Z'
+  },
+  {
+    id: 'res-as-ambulance-1',
+    name: 'Ambulances',
+    type: 'facility',
+    quantity: 40,
+    allocated: 28,
+    available: 12,
+    location: 'Dibrugarh, Assam',
+    stateId: 'as',
+    districtId: 'as-dibrugarh',
+    status: 'available',
+    lastUpdated: '2024-09-09T12:00:00Z'
+  },
+  {
+    id: 'res-as-meds-1',
+    name: 'Essential Medicines',
+    type: 'medicine',
+    quantity: 100000,
+    allocated: 85000,
+    available: 15000,
+    location: 'Guwahati, Assam',
+    stateId: 'as',
+    districtId: 'as-guwahati',
+    status: 'in_use',
+    lastUpdated: '2024-09-10T08:15:00Z'
+  },
+  {
+    id: 'res-ml-icu-1',
+    name: 'ICU Beds',
+    type: 'facility',
+    quantity: 75,
+    allocated: 55,
+    available: 20,
+    location: 'Shillong, Meghalaya',
+    stateId: 'ml',
+    districtId: 'ml-shillong',
+    status: 'available',
+    lastUpdated: '2024-09-09T21:00:00Z'
+  },
+  {
+    id: 'res-tr-nurse-1',
+    name: 'Nursing Staff',
+    type: 'medical_staff',
+    quantity: 80,
+    allocated: 60,
+    available: 20,
+    location: 'Agartala, Tripura',
+    stateId: 'tr',
+    districtId: 'tr-agartala',
+    status: 'in_use',
+    lastUpdated: '2024-09-10T07:30:00Z'
+  },
+  {
+    id: 'res-mn-doc-1',
+    name: 'Specialist Doctors',
+    type: 'medical_staff',
+    quantity: 40,
+    allocated: 30,
+    available: 10,
+    location: 'Imphal, Manipur',
+    stateId: 'mn',
+    districtId: 'mn-imphal',
+    status: 'available',
+    lastUpdated: '2024-09-09T16:40:00Z'
+  },
+  {
+    id: 'res-as-kit-1',
+    name: 'COVID Rapid Test Kits',
+    type: 'equipment',
+    quantity: 15000,
+    allocated: 10000,
+    available: 5000,
+    location: 'Guwahati, Assam',
+    stateId: 'as',
+    districtId: 'as-guwahati',
+    status: 'available',
+    lastUpdated: '2024-09-10T14:10:00Z'
   }
 ];
+
 
 // Interventions
 export const mockInterventions: Intervention[] = [
