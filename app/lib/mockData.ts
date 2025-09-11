@@ -101,8 +101,8 @@ export const mockStates: StateData[] = [
     code: 'AS',
     population: 31205576,
     riskLevel: 'medium',
-    activeAlerts: 5,
-    completedInterventions: 60,
+    activeAlerts: 7,
+    completedInterventions: 90,
     coordinates: { lat: 26.2006, lng: 92.9376 },
     healthMetrics: { mortalityRate: 6.5, morbidityRate: 14.2, vaccinationCoverage: 85, healthcareAccess: 72.5 },
     districts: [
@@ -113,7 +113,7 @@ export const mockStates: StateData[] = [
         population: 957352,
         riskLevel: 'high',
         activeAlerts: 2,
-        completedInterventions: 15,
+        completedInterventions: 20,
         coordinates: { lat: 26.1445, lng: 91.7362 },
         healthMetrics: { mortalityRate: 6.9, morbidityRate: 15, vaccinationCoverage: 87, healthcareAccess: 78 }
       },
@@ -124,9 +124,20 @@ export const mockStates: StateData[] = [
         population: 154296,
         riskLevel: 'medium',
         activeAlerts: 1,
-        completedInterventions: 8,
+        completedInterventions: 12,
         coordinates: { lat: 27.4728, lng: 94.9118 },
         healthMetrics: { mortalityRate: 6.2, morbidityRate: 13.8, vaccinationCoverage: 84, healthcareAccess: 70.5 }
+      },
+      {
+        id: 'as-silchar',
+        name: 'Silchar',
+        stateId: 'as',
+        population: 229136,
+        riskLevel: 'low',
+        activeAlerts: 1,
+        completedInterventions: 10,
+        coordinates: { lat: 24.8333, lng: 92.7789 },
+        healthMetrics: { mortalityRate: 5.8, morbidityRate: 12.5, vaccinationCoverage: 88, healthcareAccess: 76 }
       }
     ]
   },
@@ -136,8 +147,8 @@ export const mockStates: StateData[] = [
     code: 'ML',
     population: 3366710,
     riskLevel: 'medium',
-    activeAlerts: 3,
-    completedInterventions: 40,
+    activeAlerts: 4,
+    completedInterventions: 55,
     coordinates: { lat: 25.467, lng: 91.3662 },
     healthMetrics: { mortalityRate: 5.8, morbidityRate: 12.5, vaccinationCoverage: 88, healthcareAccess: 75 },
     districts: [
@@ -147,10 +158,21 @@ export const mockStates: StateData[] = [
         stateId: 'ml',
         population: 143229,
         riskLevel: 'medium',
-        activeAlerts: 1,
-        completedInterventions: 10,
+        activeAlerts: 2,
+        completedInterventions: 15,
         coordinates: { lat: 25.5788, lng: 91.8933 },
         healthMetrics: { mortalityRate: 5.9, morbidityRate: 12.8, vaccinationCoverage: 89.5, healthcareAccess: 77.2 }
+      },
+      {
+        id: 'ml-tura',
+        name: 'Tura',
+        stateId: 'ml',
+        population: 74000,
+        riskLevel: 'low',
+        activeAlerts: 0,
+        completedInterventions: 8,
+        coordinates: { lat: 25.5142, lng: 90.2026 },
+        healthMetrics: { mortalityRate: 5.6, morbidityRate: 11.9, vaccinationCoverage: 90, healthcareAccess: 78 }
       }
     ]
   },
@@ -160,8 +182,8 @@ export const mockStates: StateData[] = [
     code: 'TR',
     population: 3671032,
     riskLevel: 'medium',
-    activeAlerts: 2,
-    completedInterventions: 35,
+    activeAlerts: 3,
+    completedInterventions: 45,
     coordinates: { lat: 23.9408, lng: 91.9882 },
     healthMetrics: { mortalityRate: 5.5, morbidityRate: 11.9, vaccinationCoverage: 90.2, healthcareAccess: 80 },
     districts: [
@@ -172,9 +194,20 @@ export const mockStates: StateData[] = [
         population: 400000,
         riskLevel: 'medium',
         activeAlerts: 1,
-        completedInterventions: 12,
+        completedInterventions: 15,
         coordinates: { lat: 23.8315, lng: 91.2868 },
         healthMetrics: { mortalityRate: 5.6, morbidityRate: 12.1, vaccinationCoverage: 91, healthcareAccess: 81.5 }
+      },
+      {
+        id: 'tr-udaipur',
+        name: 'Udaipur',
+        stateId: 'tr',
+        population: 32000,
+        riskLevel: 'low',
+        activeAlerts: 0,
+        completedInterventions: 5,
+        coordinates: { lat: 23.5333, lng: 91.4833 },
+        healthMetrics: { mortalityRate: 5.3, morbidityRate: 11.5, vaccinationCoverage: 92, healthcareAccess: 83 }
       }
     ]
   },
@@ -184,8 +217,8 @@ export const mockStates: StateData[] = [
     code: 'MN',
     population: 3091545,
     riskLevel: 'high',
-    activeAlerts: 4,
-    completedInterventions: 28,
+    activeAlerts: 5,
+    completedInterventions: 38,
     coordinates: { lat: 24.6637, lng: 93.9063 },
     healthMetrics: { mortalityRate: 6.8, morbidityRate: 15, vaccinationCoverage: 82.5, healthcareAccess: 68 },
     districts: [
@@ -195,10 +228,21 @@ export const mockStates: StateData[] = [
         stateId: 'mn',
         population: 268243,
         riskLevel: 'high',
-        activeAlerts: 2,
-        completedInterventions: 10,
+        activeAlerts: 3,
+        completedInterventions: 15,
         coordinates: { lat: 24.817, lng: 93.9368 },
         healthMetrics: { mortalityRate: 7, morbidityRate: 15.5, vaccinationCoverage: 83, healthcareAccess: 70 }
+      },
+      {
+        id: 'mn-thoubal',
+        name: 'Thoubal',
+        stateId: 'mn',
+        population: 42000,
+        riskLevel: 'medium',
+        activeAlerts: 1,
+        completedInterventions: 8,
+        coordinates: { lat: 24.6387, lng: 94.0206 },
+        healthMetrics: { mortalityRate: 6.5, morbidityRate: 14.2, vaccinationCoverage: 84, healthcareAccess: 72 }
       }
     ]
   }
@@ -230,6 +274,30 @@ export const mockAlerts: Alert[] = [
     status: 'active',
     createdAt: '2024-09-06T10:00:00Z',
     updatedAt: '2024-09-08T11:00:00Z'
+  },
+  {
+    id: 'alert-103',
+    title: 'Cholera Outbreak Risk',
+    description: 'Contaminated water reported in Imphal area',
+    severity: 'critical',
+    location: 'Imphal, Manipur',
+    stateId: 'mn',
+    districtId: 'mn-imphal',
+    status: 'active',
+    createdAt: '2024-09-07T12:00:00Z',
+    updatedAt: '2024-09-09T09:30:00Z'
+  },
+  {
+    id: 'alert-104',
+    title: 'Dengue Cases',
+    description: 'Spike in dengue cases in Agartala',
+    severity: 'high',
+    location: 'Agartala, Tripura',
+    stateId: 'tr',
+    districtId: 'tr-agartala',
+    status: 'resolved',
+    createdAt: '2024-09-04T07:00:00Z',
+    updatedAt: '2024-09-06T15:00:00Z'
   }
 ];
 
@@ -247,6 +315,19 @@ export const mockResources: Resource[] = [
     districtId: 'as-guwahati',
     status: 'available',
     lastUpdated: '2024-09-08T18:00:00Z'
+  },
+  {
+    id: 'res-ml-doc-1',
+    name: 'Doctors on Call',
+    type: 'medical_staff',
+    quantity: 50,
+    allocated: 35,
+    available: 15,
+    location: 'Shillong, Meghalaya',
+    stateId: 'ml',
+    districtId: 'ml-shillong',
+    status: 'in_use',
+    lastUpdated: '2024-09-08T20:00:00Z'
   }
 ];
 
@@ -267,13 +348,31 @@ export const mockInterventions: Intervention[] = [
     startDate: '2024-08-01T00:00:00Z',
     endDate: '2024-09-30T00:00:00Z',
     assignedTo: ['Dr. Das', 'Health Team Assam']
+  },
+  {
+    id: 'int-102',
+    title: 'Malaria Awareness Program',
+    description: 'Door-to-door campaign in Shillong',
+    type: 'awareness',
+    targetPopulation: 20000,
+    completedCount: 15000,
+    completionPercentage: 75,
+    location: 'Shillong, Meghalaya',
+    stateId: 'ml',
+    districtId: 'ml-shillong',
+    status: 'ongoing',
+    startDate: '2024-08-15T00:00:00Z',
+    endDate: '2024-09-20T00:00:00Z',
+    assignedTo: ['Dr. Nongrum', 'Shillong Health Volunteers']
   }
 ];
 
 // GIS Heatmap
 export const mockGISData = {
   heatmapPoints: [
-    { lat: 26.1445, lng: 91.7362, intensity: 0.8, location: 'Guwahati' }
+    { lat: 26.1445, lng: 91.7362, intensity: 0.8, location: 'Guwahati' },
+    { lat: 24.817, lng: 93.9368, intensity: 0.9, location: 'Imphal' },
+    { lat: 23.8315, lng: 91.2868, intensity: 0.7, location: 'Agartala' }
   ]
 };
 
@@ -285,5 +384,19 @@ export const mockAIPredictions: AIPrediction[] = [
     disease: 'Cholera',
     riskScore: 0.85,
     predictionDate: '2024-09-10'
+  },
+  {
+    id: 'ai-102',
+    location: 'Shillong',
+    disease: 'Malaria',
+    riskScore: 0.65,
+    predictionDate: '2024-09-11'
+  },
+  {
+    id: 'ai-103',
+    location: 'Imphal',
+    disease: 'Dengue',
+    riskScore: 0.78,
+    predictionDate: '2024-09-12'
   }
 ];
